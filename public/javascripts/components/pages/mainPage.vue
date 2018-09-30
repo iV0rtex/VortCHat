@@ -21,9 +21,18 @@
         },
         methods:{
             sendMessage: function(){
+                //TODO: need to validate this.props.text;
                 this.socket.emit('chat setUser',this.props.text);
-                this.$router.push('home');
-                this.props.text = '';
+                this.socket.on('chat setUser',(msg)=>{
+                    if(msg){
+                        this.$router.push('home');
+                        this.props.text = '';
+                    }else{
+                        //TODO: case error
+                    }
+
+                });
+
             },
         }
     }

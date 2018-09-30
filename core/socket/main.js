@@ -1,4 +1,6 @@
 var UserStore = require('../store/UsersConnectedStore');
+const {connectUser} = require('../db/dbManager');
+
 var socketEvent = {
     socketServer:null,
     set:(socketServer)=>{
@@ -7,7 +9,6 @@ var socketEvent = {
     },
     start:()=>{
         socketEvent.socketServer.on('connection', function(socket){
-            //socketEvent.send('chat connected',UserStore.users[socket.id]);
             socketEvent.get(socket);
         });
     },
@@ -17,8 +18,7 @@ var socketEvent = {
 
         });
         socket.on('chat setUser',(msg)=>{
-            UserStore.users[socket.id] = msg;
-            socketEvent.send('chat checkUser',socket,true);
+            connectUser({socketId:socket.id,msg},(err,res)=>{let result = false; if(!err){result = true}socketEvent.send('chat setUser',socket,result)});
         });
         socket.on('chat checkUser',(msg)=>{
             var result = UserStore.users.hasOwnProperty(socket.id)?true:false;
