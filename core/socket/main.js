@@ -18,6 +18,7 @@ var socketEvent = {
         });
         socket.on('chat setUser',(msg)=>{
             UserStore.users[socket.id] = msg;
+            socketEvent.send('chat checkUser',socket,true);
         });
         socket.on('chat checkUser',(msg)=>{
             var result = UserStore.users.hasOwnProperty(socket.id)?true:false;
